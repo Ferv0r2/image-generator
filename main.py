@@ -1,3 +1,4 @@
+import shutil
 import time
 import os
 from dotenv import load_dotenv
@@ -7,7 +8,6 @@ from google.oauth2.service_account import Credentials
 from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
 import pygetwindow as gw
-import requests
 
 # ✅ .env 로드
 load_dotenv()
@@ -48,6 +48,10 @@ time.sleep(2)
 
 print("[✅] ChatGPT Image Generator 페이지 열림!")
 
+# ✅ 다운로드 폴더 설정
+DOWNLOAD_FOLDER = os.path.join(os.path.expanduser("~"), "Downloads")
+SAVE_FOLDER = "generated_images"
+os.makedirs(SAVE_FOLDER, exist_ok=True)
 
 # ✅ DALLE 프롬프트 입력 후 이미지 생성
 for i, row in df.iterrows():
@@ -71,11 +75,23 @@ for i, row in df.iterrows():
                 send_keys("{ENTER}")  # 엔터 키 입력
                 time.sleep(30)  # 이미지 생성 대기
 
-                # ✅ 생성된 이미지 다운로드 (스크린샷 방식)
-                filename = f"generated_images/{i}_{item}.png"
-                chrome_window.screenshot(filename)
+                # ✅ 다운로드 버튼 클릭
+                # Todo
+                
+                # ✅ 최근 다운로드된 파일 찾기
+                files = sorted(os.listdir(DOWNLOAD_FOLDER), key=lambda f: os.path.getctime(os.path.join(DOWNLOAD_FOLDER, f)), reverse=True)
+                downloaded_file = None
+                for file in files:
+                    if file.endswith(".png"):
+                        downloaded_file = os.path.join(DOWNLOAD_FOLDER, file)
+                        break
 
-                print(f"[✅] 이미지 생성 및 저장 완료: {filename}")
+                if downloaded_file:
+                    # ✅ 파일 이동 및 이름 변경
+                    new_filename = os.path.join(SAVE_FOLDER, f"{i}_{item}.png")
+                    shutil.move(downloaded_file, new_filename)
+                    print(f"[✅] 이미지 저장 완료: {new_filename}")
+
                 time.sleep(3)
 
             except Exception as e:
