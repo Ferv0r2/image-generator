@@ -8,6 +8,7 @@ from google.oauth2.service_account import Credentials
 from pywinauto.application import Application
 from pywinauto.keyboard import send_keys
 import pygetwindow as gw
+import pyautogui
 
 # ✅ .env 로드
 load_dotenv()
@@ -30,14 +31,14 @@ df = pd.DataFrame(data[1:], columns=data[0])  # 첫 번째 행을 컬럼으로 �
 
 # ✅ Chrome Beta 실행
 CHROME_BETA_PATH = r"C:\Program Files\Google\Chrome Beta\Application\chrome.exe"
-CHATGPT_IMAGE_GENERATOR_URL = "https://chatgpt.com/g/g-pmuQfob8d-image-generator"
+CHATGPT_IMAGE_GENERATOR_URL = "https://chatgpt.com/g/g-pmuQfob8d-image-generator/c/67a4dda3-8840-8002-b356-6340878a346e"
 
 print("[🚀] Chrome Beta 실행 중...")
 app = Application().start(f'"{CHROME_BETA_PATH}" {CHATGPT_IMAGE_GENERATOR_URL}')
 time.sleep(5)  # 브라우저 로딩 대기
 
 # ✅ Chrome 창 찾기
-chrome_windows = [win for win in gw.getWindowsWithTitle("ChatGPT") if win.isActive]
+chrome_windows = [win for win in gw.getWindowsWithTitle("image generator") if win.isActive]
 if not chrome_windows:
     print("[❌] Chrome 창을 찾을 수 없습니다.")
     exit()
@@ -70,15 +71,30 @@ for i, row in df.iterrows():
                 formatted_prompt = prompt.replace(" ", "{SPACE}")
 
                 # ✅ 프롬프트 입력
-                send_keys(formatted_prompt)
+                send_keys(formatted_prompt + "+{ENTER}+{ENTER}only{SPACE}response{SPACE}image.{SPACE}NO{SPACE}MESSAGE")
                 time.sleep(1)
                 send_keys("{ENTER}")  # 엔터 키 입력
-                time.sleep(30)  # 이미지 생성 대기
-
-                # ✅ 다운로드 버튼 클릭
-                # Todo
+                time.sleep(40)  # 이미지 생성 대기
                 
+                # ✅ 이미지 생성 후 페이지 최하단으로 스크롤
+                
+                pyautogui.scroll(300) # Bottom 버튼 활성화
+                bottom_button_coords = (3009, 849)
+                pyautogui.moveTo(bottom_button_coords[0], bottom_button_coords[1], duration=0.5)
+                pyautogui.click()
+                time.sleep(2)
+                print("[✅] 페이지 최하단으로 스크롤 완료")
+
+                # ✅ 좌표를 이용해 다운로드 버튼 클릭
+                download_button_coords = (3343, 359)
+                pyautogui.moveTo(download_button_coords[0], download_button_coords[1], duration=0.5)
+                time.sleep(1)
+                pyautogui.click()
+                print("[✅] 좌표를 통한 다운로드 버튼 클릭 완료")
+
+
                 # ✅ 최근 다운로드된 파일 찾기
+                time.sleep(5)  # 다운로드 완료 대기 (환경에 따라 조정)
                 files = sorted(os.listdir(DOWNLOAD_FOLDER), key=lambda f: os.path.getctime(os.path.join(DOWNLOAD_FOLDER, f)), reverse=True)
                 downloaded_file = None
                 for file in files:
