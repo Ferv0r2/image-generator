@@ -88,13 +88,13 @@ for i, row in df.iterrows():
                 # ✅ 좌표를 이용해 다운로드 버튼 클릭
                 download_button_coords = (3343, 359)
                 pyautogui.moveTo(download_button_coords[0], download_button_coords[1], duration=0.5)
-                time.sleep(1)
+                time.sleep(2)
                 pyautogui.click()
                 print("[✅] 좌표를 통한 다운로드 버튼 클릭 완료")
 
 
                 # ✅ 최근 다운로드된 파일 찾기
-                time.sleep(5)  # 다운로드 완료 대기 (환경에 따라 조정)
+                time.sleep(10)  # 다운로드 완료 대기
                 files = sorted(os.listdir(DOWNLOAD_FOLDER), key=lambda f: os.path.getctime(os.path.join(DOWNLOAD_FOLDER, f)), reverse=True)
                 downloaded_file = None
                 for file in files:
