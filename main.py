@@ -31,7 +31,7 @@ df = pd.DataFrame(data[1:], columns=data[0])  # 첫 번째 행을 컬럼으로 �
 
 # ✅ Chrome Beta 실행
 CHROME_BETA_PATH = r"C:\Program Files\Google\Chrome Beta\Application\chrome.exe"
-CHATGPT_IMAGE_GENERATOR_URL = "https://chatgpt.com/g/g-pmuQfob8d-image-generator/c/67a4dda3-8840-8002-b356-6340878a346e"
+CHATGPT_IMAGE_GENERATOR_URL = "https://chatgpt.com/g/g-pmuQfob8d-image-generator/c/67acb726-6aa4-8002-bb2d-d80890c4de97"
 
 print("[🚀] Chrome Beta 실행 중...")
 app = Application().start(f'"{CHROME_BETA_PATH}" {CHATGPT_IMAGE_GENERATOR_URL}')
@@ -76,17 +76,8 @@ for i, row in df.iterrows():
                 send_keys("{ENTER}")  # 엔터 키 입력
                 time.sleep(40)  # 이미지 생성 대기
                 
-                # ✅ 이미지 생성 후 페이지 최하단으로 스크롤
-                
-                pyautogui.scroll(300) # Bottom 버튼 활성화
-                bottom_button_coords = (3009, 849)
-                pyautogui.moveTo(bottom_button_coords[0], bottom_button_coords[1], duration=0.5)
-                pyautogui.click()
-                time.sleep(2)
-                print("[✅] 페이지 최하단으로 스크롤 완료")
-
                 # ✅ 좌표를 이용해 다운로드 버튼 클릭
-                download_button_coords = (3343, 359)
+                download_button_coords = (3338, 289)
                 pyautogui.moveTo(download_button_coords[0], download_button_coords[1], duration=0.5)
                 time.sleep(2)
                 pyautogui.click()
